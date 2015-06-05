@@ -1,0 +1,205 @@
+<html>
+<head>
+<title>Tens</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<!-- Library -->
+<script src="lib/angular.js" charset="utf-8"></script>
+<script src="lib/ui-bootstrap-tpls-0.11.0.js" charset="utf-8"></script>
+<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css"></link>
+<link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<!-- Styles -->
+<style>
+@media (max-width: 1920px) {
+	button.game {
+		width: 120px;
+		font-size: 75px;
+	}
+}
+@media (max-width: 960px) {
+	button.game {
+		width: 90px;
+		font-size: 50px;
+	}
+}
+@media (max-width: 480px) {
+	button.game {
+		width: 60px;
+		height: 60px;
+		font-size: 25px;
+	}
+}
+@media (max-width: 360px) {
+	button.game {
+		width: 16%;
+		height: 60px;
+		font-size: 15px;
+	}
+}
+</style>
+<!-- Application -->
+<script>
+	function tensController($scope,$filter) {
+	
+		// Declare these as variables that we can change later.
+		$scope.boardHeight = 3;
+		$scope.boardWidth = 6;
+		
+		$scope.boardWidthArray = [];
+		$scope.boardHeightArray = [];
+		for (var c = 0; c < $scope.boardWidth; c++) $scope.boardWidthArray.push(c);
+		for (var r = 0; r < $scope.boardHeight; r++) $scope.boardHeightArray.push(r);
+		
+		function resetBoard() {
+			$scope.board = [];
+			for (var r = 0; r < $scope.boardHeight; r++) {
+				$scope.board.push([]);
+				for (var c = 0; c < $scope.boardWidth; c++) {
+					cell = { 'value':0, 'selected':false };
+					$scope.dealToCell(cell,true);
+					$scope.board[r].push(cell); 
+				}
+			}
+		}
+
+		var _rankCount = 12;
+		var _blockCount = 18;
+		var _blockValue = -1;
+		
+		function resetDeck() {
+			$scope.deck = [];
+			for (var count = 0; count < _rankCount; count++) {
+				for (var rank = 1; rank <= 10; rank++) {
+					$scope.deck.push(rank);
+				}
+			}
+			for (var count = 0; count < _blockCount; count++) {
+				$scope.deck.push(_blockValue);
+			}
+		}
+
+		function shuffleDeck() {
+			$scope.deck = $filter('orderBy')($scope.deck, function(value) { return Math.random();});
+		}
+		
+		$scope.dealToCell = function(cell,skipBlocks) {
+
+			blockCount = 0;
+		
+			if (skipBlocks) {
+				blocked = true;
+				while (blocked) {
+					card = $scope.deck.pop();
+					if (card == _blockValue) {
+						blockCount++;
+					} else {
+						blocked = false;
+					}
+				}
+			} else {
+				card = $scope.deck.pop();
+			}
+
+			cell.value = card;
+			if (card == _blockValue) {
+				$scope.blockRemainingCount--;
+			}
+			
+			if (skipBlocks) {
+				for (var count = 0; count < blockCount; count++) {
+					$scope.deck.push(_blockValue);
+				}
+			}
+		}
+		
+		$scope.cellClass = function(cell) {
+			if (cell.value == _blockValue) return "btn btn-danger";
+			return cell.selected ? "btn btn-primary" : "btn btn-default";
+		}
+		
+		$scope.toggle = function(rowIndex,columnIndex) {
+			cell = $scope.board[rowIndex][columnIndex];
+			if (cell.value == _blockValue) return;
+			cell.selected = !cell.selected;
+			$scope.selectedSum += (cell.selected ? cell.value : -cell.value);
+			if (($scope.selectedSum > 0) && ($scope.selectedSum % 10 == 0)) {
+				$scope.dealRound();
+			}
+		}
+		
+		$scope.blockRemainingCount = _blockCount;
+		
+		$scope.dealRound = function() {
+			for (var r = 0; r < $scope.boardHeight; r++) {
+				for (var c = 0; c < $scope.boardWidth; c++) {
+					cell = $scope.board[r][c];
+					if (cell.selected) {
+						$scope.dealToCell(cell);
+						cell.selected = false;
+					}
+				}
+			}
+			$scope.selectedSum = 0;
+		}
+		
+		$scope.isBlock = function(cell) {
+			return cell.value == _blockValue;
+		}
+						
+		$scope.newGame = function() {
+			resetDeck();
+			shuffleDeck();
+			resetBoard();
+			shuffleDeck();
+			$scope.selectedSum = 0;
+			$scope.blockRemainingCount = _blockCount;
+		};
+		
+		$scope.newGame();
+	}
+
+	var app = angular.module('app', ['ui.bootstrap']);
+	app.controller('tensController', 
+		['$scope','$filter',tensController]);
+</script>
+</head>
+
+<script>
+</script>
+
+<body data-ng-app="app" data-ng-controller="tensController">
+
+<nav role="navigation" class="navbar navbar-default">
+		<p class="navbar-text hidden-xs hidden-sm"><b>Tens</b></p>
+        <ul role="navigation" class="nav navbar-nav">
+			<li><a href="#" data-ng-click="newGame();" style="btn btn-default">New Game</a></li>
+        </ul>
+        <ul role="navigation" class="nav navbar-nav navbar-right">			
+			<li><a href="#">
+				{{ selectedSum }} <i class="fa fa-plus"></i>
+				{{ deck.length }} <i class="fa fa-bars"></i>
+				{{ blockRemainingCount }} <i class="fa fa-close"></i>
+				</a>
+			</li>
+         </ul>	
+</nav>
+
+<p class="col-xs-12 col-md-12" data-ng-hide="hideInstructions">
+Select any quantity of cards that adds up to a multiple of 10. 
+Win = cover all spaces with blocks. Lose = End up with no possible way to play.
+<a href="#" data-ng-click="hideInstructions = true;">&times;</a>
+</p>
+
+<div data-ng-repeat="rowIndex in boardHeightArray">
+	<button 
+		class="game"
+		data-ng-repeat="columnIndex in boardWidthArray"
+		data-ng-class="cellClass(board[rowIndex][columnIndex])"
+		data-ng-click="toggle(rowIndex,columnIndex)"
+	>
+	<span data-ng-hide="isBlock(board[rowIndex][columnIndex])">{{ board[rowIndex][columnIndex].value }}</span>
+	<span data-ng-show="isBlock(board[rowIndex][columnIndex])">&times;</span>
+	</button>
+</div>
+
+</body>
+</html>
