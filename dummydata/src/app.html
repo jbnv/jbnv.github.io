@@ -51,7 +51,15 @@
 
     <p>The list below shows the menu options with the current language and country, and samples of the values
       that each item produces.</p>
+
     <div id="demo-container" class="col-xs-12 col-sm-8 col-md-6 col-lg-4">
+      <table class="table">
+        <tr><th>Menu Item</th><th>Sample Result</th></tr>
+        <tr repeat.for="item of menu">
+          <td><b>${item[0]}</b></td>
+          <td>${item[1]}</td>
+        </tr>
+      </table>
     </div>
 
   </section>
