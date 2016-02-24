@@ -1,3 +1,57 @@
 <template>
-  <h1>${message}</h1>
+
+  <section id="settings">
+    <h2>Settings</h2>
+
+    <form class="form-horizontal" id="options-form" submit.trigger="submit()">
+      <div class="form-group">
+        <label for="languages" class="col-sm-2 control-label">Language</label>
+        <div class="col-sm-4">
+          <select class="form-control" id="languages" value.bind="language">
+            <option value="English">English</option>
+            <option value="German">German</option>
+            <option value="Greek">Greek</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Spanish">Spanish</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="countries" class="col-sm-2 control-label">Country</label>
+        <div class="col-sm-4">
+          <select class="form-control" id="countries" value.bind="country">
+            <option value="UnitedStates">United States</option>
+            <option value="Canada">Canada</option>
+            <option value="Mexico">Mexico</option>
+            <option value="Australia">Australia</option>
+            <option value="UnitedKingdom">United Kingdom</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="ordinal" class="col-sm-2 control-label">Ordinal</label>
+        <div class="col-sm-4">
+          <input type="textbox" class="form-control" id="ordinal" value.bind="ordinal"/>
+          A number that determines which item in a list is selected.
+        </div>
+      </div>
+      <div class="form-group">
+       <div class="col-sm-offset-2 col-sm-4">
+         <button type="submit" class="btn btn-default">Save</button>
+       </div>
+     </div>
+    </form>
+
+  </section>
+
+  <section id="results">
+    <h2>Demo for Chosen Settings</h2>
+
+    <p>The list below shows the menu options with the current language and country, and samples of the values
+      that each item produces.</p>
+    <div id="demo-container" class="col-xs-12 col-sm-8 col-md-6 col-lg-4">
+    </div>
+
+  </section>
+
 </template>
