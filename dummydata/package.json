@@ -28,6 +28,8 @@
       "bootstrap": "github:twbs/bootstrap@^3.3.5",
       "fetch": "github:github/fetch@^0.10.1",
       "font-awesome": "npm:font-awesome@^4.4.0",
+      "moment": "npm:moment@^2.11.2",
+      "q": "npm:q@^1.4.1",
       "text": "github:systemjs/plugin-text@^0.0.4"
     },
     "devDependencies": {
@@ -40,5 +42,8 @@
         "main": "client/shim.min"
       }
     }
+  },
+  "devDependencies": {
+    "jspm": "^0.16.29"
   }
 }
