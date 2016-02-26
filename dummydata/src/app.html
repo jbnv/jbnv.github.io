@@ -9,7 +9,7 @@
       <div class="form-group">
         <label for="languages" class="col-sm-2 control-label">Language</label>
         <div class="col-sm-4">
-          <select class="form-control" id="languages" value.bind="language">
+          <select class="form-control" id="languages" value.bind="_context.language">
             <option value="English">English</option>
             <option value="German">German</option>
             <option value="Greek">Greek</option>
@@ -21,7 +21,7 @@
       <div class="form-group">
         <label for="countries" class="col-sm-2 control-label">Country</label>
         <div class="col-sm-4">
-          <select class="form-control" id="countries" value.bind="country">
+          <select class="form-control" id="countries" value.bind="_context.country">
             <option value="UnitedStates">United States</option>
             <option value="Canada">Canada</option>
             <option value="Mexico">Mexico</option>
@@ -33,7 +33,7 @@
       <div class="form-group">
         <label for="ordinal" class="col-sm-2 control-label">Ordinal</label>
         <div class="col-sm-4">
-          <input type="textbox" class="form-control" id="ordinal" value.bind="ordinal"/>
+          <input type="textbox" class="form-control" id="ordinal" value.bind="_context.ordinal"/>
           A number that determines which item in a list is selected.
         </div>
       </div>
@@ -57,7 +57,7 @@
         <tr><th>Menu Item</th><th>Sample Result</th></tr>
         <tr repeat.for="item of menu">
           <td><b>${item[0]}</b></td>
-          <td>${item[1]}</td>
+          <td>${item[1]()}</td>
         </tr>
       </table>
     </div>

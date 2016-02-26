@@ -27,10 +27,10 @@ export class UnitedStates {
   }
 
   menuItems = [
-    ["0##-####",phoneNumber({format:"0##-####"})],
-    ["###-0##-####",phoneNumber({format:"###-0##-####"})],
-    ["Zip Code", zipCode],
-    ["Zip+4 Code", zipPlus4]
+    ["0##-####",this.phoneNumber({format:"0##-####"})],
+    ["###-0##-####",this.phoneNumber({format:"###-0##-####"})],
+    ["Zip Code", this.zipCode],
+    ["Zip+4 Code", this.zipPlus4]
   ];
 
   constructor(dd) {

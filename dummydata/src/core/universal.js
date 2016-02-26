@@ -22,12 +22,12 @@ export class Universal {
   }
 
   menuItems = [
-    ["Number",number],
+    ["Number",this.number],
     ["Alphanumeric String",alphanumeric],
     null,
-    ["Today",today],
-    ["Earlier Date",earlierDate],
-    ["Later Date",laterDate],
+    ["Today",this.today],
+    ["Earlier Date",this.earlierDate],
+    ["Later Date",this.laterDate],
   ];
 
   constructor(dd) {

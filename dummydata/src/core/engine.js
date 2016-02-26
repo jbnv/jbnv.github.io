@@ -6,8 +6,7 @@ import {GlobalOrdinal} from "./ordinal"
 // group: 'Languages'|'Countries'
 // subgroup: string
 // sourceType: 'txt'|'json'|array
-function DummyDataEngine(dd,group,subgroup,sourceType,options) {
-  console.log("DummyDataEngine BEGIN");
+export function DummyDataEngine(dd,group,subgroup,sourceType,options) {
 
   var _data = {},
 
@@ -42,7 +41,7 @@ function DummyDataEngine(dd,group,subgroup,sourceType,options) {
   // return: promise
   function _downloadFile(filename) {
     var url = _directory+filename;
-    console.log("_downloadFile",url);
+    //console.log("_downloadFile",url);
 
     var request = new XMLHttpRequest();
     var deferred = Q.defer();
@@ -122,7 +121,7 @@ function DummyDataEngine(dd,group,subgroup,sourceType,options) {
     Q.allSettled(downloadGroupList)
     .then(
       function (results) {
-        console.log("Download results:",results);
+        //console.log("Download results:",results);
       },
       function(error) {
         console.error(error);
@@ -152,7 +151,7 @@ function DummyDataEngine(dd,group,subgroup,sourceType,options) {
 
   // options.transform: function(t) that produces an array based on t per the part-of-speech pattern.
   return function(listName,options) {
-    console.log("DummyDataEngine() BEGIN",listName,options);
+    //console.log("DummyDataEngine() BEGIN",listName,options);
 
     var list = _data[listName];
     if (list == null) {
@@ -197,6 +196,4 @@ function DummyDataEngine(dd,group,subgroup,sourceType,options) {
     return outbound;
   }
 
-};
-
-export { DummyDataEngine };
+}

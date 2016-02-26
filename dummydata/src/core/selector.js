@@ -4,7 +4,7 @@ function _isFunction(functionToCheck) {
 }
 
 // Parse a selector object and provide methods to access it.
-function Selector(content) {
+export function Selector(content) {
   var _content = [];
   var _sum = 0;
 
@@ -41,7 +41,7 @@ function Selector(content) {
     for(var i = 0, len = _content.length; i < len; i++) {
       selector -= _content[i][0];
       if (selector < 0) {
-        selected = _content[i][1];
+        var selected = _content[i][1];
         if (selected.constructor === Array) { return selected.randomElement(); }
         if (_isFunction(selected)) { return selected(); }
         return selected;
@@ -51,5 +51,3 @@ function Selector(content) {
     return "Array breach; sum="+_sum+", selector="+selector; // this should never happen
   }
 };
-
-export { Selector };
