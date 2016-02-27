@@ -71,6 +71,30 @@ let _maleName = new Selector([
   () => data('EnglishNamePrefixes2')+data('EnglishNameSuffixes1')
 ])
 
+function _femaleName() {
+  var selector = Math.random();
+  if (selector < 0.8) return data('EnglishFemaleNames');
+  return _maleName()+data('EnglishFeminineSuffixes');
+}
+
+let _surname = new Selector([
+  [10,function() {return data('EnglishSurnames')}],
+  [4,_maleName],
+  [5,function() {return _maleName()+data('EnglishNameSuffixes1')}],
+  [5,function() {return data('EnglishSurnameNamePrefixes')+data('EnglishSurnames')}],
+  [10,function() {return data('EnglishSurnameNamePrefixes')+_maleName()}],
+  [1,function() {return data('EnglishSurnameNamePrefixes')+_maleName()+data('EnglishNameSuffixes1')}],
+]);
+
+function _maleFullName() {
+  return _maleName()+" "+_surname();
+};
+
+function _femaleFullName() {
+  return _femaleName()+" "+_surname();
+};
+
+
   // // [adjective phrase, is plural? (default false)]
   // adjectivePhrase = new Selector([
   //   function() { return ["the",singularOrPlural(0.50)]; },
@@ -89,34 +113,11 @@ let _maleName = new Selector([
   //   function() { return ["many "+data("EnglishAdjectives"),true]; },
   //   function() { return ["few",true]; },
   //   function() { return ["few "+data("EnglishAdjectives"),true]; },
-  //   function() { return [this.maleName()+"'s",singularOrPlural(0.50)]; },
-  //   function() { return [this.femaleName()+"'s",singularOrPlural(0.50)]; },
-  //   function() { return [this.surname()+"'s",singularOrPlural(0.50)]; }
+  //   function() { return [_maleName()+"'s",singularOrPlural(0.50)]; },
+  //   function() { return [_femaleName()+"'s",singularOrPlural(0.50)]; },
+  //   function() { return [_surname()+"'s",singularOrPlural(0.50)]; }
   // ]);
 
-
-  // femaleName() {
-  //   var selector = Math.random();
-  //   if (selector < 0.8) return data('EnglishFemaleNames');
-  //   return this.maleName()+data('EnglishFeminineSuffixes');
-  // }
-  //
-  // surname = new Selector([
-  //   [10,function() {return data('EnglishSurnames')}],
-  //   [4,this.maleName],
-  //   [5,function() {return this.maleName()+data('EnglishNameSuffixes1')}],
-  //   [5,function() {return data('EnglishSurnameNamePrefixes')+data('EnglishSurnames')}],
-  //   [10,function() {return data('EnglishSurnameNamePrefixes')+this.maleName()}],
-  //   [1,function() {return data('EnglishSurnameNamePrefixes')+this.maleName()+data('EnglishNameSuffixes1')}],
-  // ]);
-  //
-  // maleFullName() {
-  //   return this.maleName()+" "+this.surname();
-  // };
-  //
-  // femaleFullName() {
-  //   return this.femaleName()+" "+this.surname();
-  // };
 
   // cardinalDirectionsForAddresses = new Selector([
   //   [10,['']],
@@ -126,26 +127,26 @@ let _maleName = new Selector([
   //
   // streetName = new Selector([
   //   function() { return data('EnglishAnimals'); },
-  //   function() { return this.color(); },
+  //   function() { return _color(); },
   //   function() { return data('EnglishOrdinalNumbers'); },
   //   function() { return data('EnglishPlants'); },
-  //   function() { return this.maleName(); },
-  //   function() { return this.femaleName(); },
-  //   function() { return this.surname(); },
-  //   function() { return this.maleFullName(); },
-  //   function() { return this.femaleFullName(); },
+  //   function() { return _maleName(); },
+  //   function() { return _femaleName(); },
+  //   function() { return _surname(); },
+  //   function() { return _maleFullName(); },
+  //   function() { return _femaleFullName(); },
   //   function() { return data('EnglishAdjectives')+' '+data('EnglishTerrainWords'); },
   //   function() { return data('EnglishTerrainWords')+['side','view'].randomElement(); }
   // ]);
   //
   // streetAddress() {
   //   var number = Math.floor(Math.pow(100000,Math.random()));
-  //   var cardinalDirection = this.cardinalDirectionsForAddresses();
+  //   var cardinalDirection = _cardinalDirectionsForAddresses();
   //   var streetType = data('EnglishRoadTypes');
   //   var address
   //     = "" + number + " "
   //     + cardinalDirection + (cardinalDirection == '' ? '' : " ")
-  //     + this.streetName() + " " + streetType;
+  //     + _streetName() + " " + streetType;
   //   return address.toTitleCase();
   // }
   //
@@ -158,24 +159,24 @@ let _maleName = new Selector([
   // cityModifiers = ['town','ton','ville','burg',' City',' Springs',' Heights',' Town'];
   //
   // citySelector = new Selector([
-  //   function() { return this.surname(); },
-  //   function() { return this.surname()+cityModifiers.randomElement(); },
-  //   function() { return this.surname()+cityModifiers.randomElement(); },
-  //   function() { return this.maleName()+cityModifiers.randomElement(); },
-  //   function() { return this.femaleName()+cityModifiers.randomElement(); },
-  //   function() { return "Lake "+this.surname(); },
-  //   function() { return "Lake "+this.maleName(); },
-  //   function() { return "Lake "+this.femaleName(); },
-  //   function() { return "Mount "+this.surname(); },
-  //   function() { return "Mount "+this.maleName(); },
-  //   function() { return "Mount "+this.femaleName(); }
+  //   function() { return _surname(); },
+  //   function() { return _surname()+cityModifiers.randomElement(); },
+  //   function() { return _surname()+cityModifiers.randomElement(); },
+  //   function() { return _maleName()+cityModifiers.randomElement(); },
+  //   function() { return _femaleName()+cityModifiers.randomElement(); },
+  //   function() { return "Lake "+_surname(); },
+  //   function() { return "Lake "+_maleName(); },
+  //   function() { return "Lake "+_femaleName(); },
+  //   function() { return "Mount "+_surname(); },
+  //   function() { return "Mount "+_maleName(); },
+  //   function() { return "Mount "+_femaleName(); }
   // ]);
   //
   // city() {
   //   var cardinalDirection = cardinalDirectionsForCity();
   //   var city
   //     = cardinalDirection + (cardinalDirection == '' ? '' : " ")
-  //     + this.citySelector();
+  //     + _citySelector();
   //   return toTitleCase(city);
   // }
   //
@@ -187,12 +188,12 @@ let _maleName = new Selector([
   // ]);
   //
   // ipsum_clause() {
-  //   var adjectivePhraseArray = this.adjectivePhrase();
+  //   var adjectivePhraseArray = _adjectivePhrase();
   //   var _dataOptions = {
   //     partOfSpeech: 'noun',
   //     plural: adjectivePhraseArray.length >= 2 && adjectivePhraseArray[1]
   //   };
-  //   return adjectivePhraseArray[0]+" "+this.ipsum_noun_selector();
+  //   return adjectivePhraseArray[0]+" "+_ipsum_noun_selector();
   // }
   //
   // verbSelector(tense) {
@@ -200,7 +201,7 @@ let _maleName = new Selector([
   // }
   //
   // ipsum_verb = new Selector([
-  //   [5, function() { return this.verbSelector('past');}],
+  //   [5, function() { return _verbSelector('past');}],
   //   [5, function() {
   //     var selector1 = [
   //       ['','infinitive'],
@@ -213,7 +214,7 @@ let _maleName = new Selector([
   //     var outbound =
   //       ['can','could','shall','should','may','might','will','would'].randomElement()
   //       + " " + selector1[0] + (selector1[0] == "" ? "" : " ")
-  //       + this.verbSelector(selector1[1]);
+  //       + _verbSelector(selector1[1]);
   //     return outbound;
   //   }]
   // ]);
@@ -222,36 +223,33 @@ let _maleName = new Selector([
   //   var sentenceCount = options == null ? 1 : (options.count || 1);
   //   var sentences = [];
   //   for (var i = 0; i < sentenceCount; i++) {
-  //     var sentence = toInitialCase(this.ipsum_clause()+" "+this.ipsum_verb()+" "+this.ipsum_clause()+".")
+  //     var sentence = toInitialCase(_ipsum_clause()+" "+_ipsum_verb()+" "+_ipsum_clause()+".")
   //     sentences.push(sentence);
   //   }
   //   return sentences.join(" ");
   // }
 
-
-// var _menuItems = [
-//   ["Male Name", this.maleName],
-//   //["Female Name", this.femaleName],
-//   //["Surname", this.surname]
-//   // ["Male Full Name", this.maleFullName],
-//   // ["Female Full Name", this.femaleFullName],
-//   // null,
-//   ["Color", this.color],
-//   // ["Street Address",this.streetAddress],
-//   // ["City",this.city],
-//   // null,
-//   // ["Ipsum 1 sentence",this.ipsum],
-//   // ["Ipsum 3 sentences",this.ipsum,{count:3}],
-//   // ["Ipsum 5 sentences",this.ipsum,{count:5}]
-// ];
-//
-
 export default {
   color: _color,
   maleName: _maleName,
+  femaleName: _femaleName,
+  surname: _surname,
+  maleFullName: _maleFullName,
+  femaleFullName: _femaleFullName,
 
   menuItems: [
     ["Male Name", _maleName],
-    ["Color", _color]
+    ["Female Name", _femaleName],
+    ["Surname", _surname],
+    ["Male Full Name", _maleFullName],
+    ["Female Full Name", _femaleFullName],
+    null,
+    ["Color", _color],
+    // ["Street Address",_streetAddress],
+    // ["City",_city],
+    // null,
+    // ["Ipsum 1 sentence",_ipsum],
+    // ["Ipsum 3 sentences",_ipsum,{count:3}],
+    // ["Ipsum 5 sentences",_ipsum,{count:5}]
   ]
 }

@@ -9,7 +9,7 @@ export class DummyData {
   // p1: object defining the set of languages or name of language
   // p2: (if p1 == name of language) language object
   addLanguage(p1,p2) {
-    console.log("DummyData.addLanguage",p1,p2);
+    //console.log("DummyData.addLanguage",p1,p2);
     if (p1 == null) return;
     if (typeof p1 === 'object') {
         this._languages = p1;
@@ -21,7 +21,7 @@ export class DummyData {
   // p1: object defining the set of languages or name of language
   // p2: (if p1 == name of language) language object
   addCountry(p1,p2) {
-    console.log("DummyData.addCountry",p1,p2);
+    //console.log("DummyData.addCountry",p1,p2);
     if (p1 == null) return;
     if (typeof p1 === 'object') {
         this._countries = p1;

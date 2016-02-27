@@ -22,14 +22,13 @@ export class App {
   menu = [];
 
   populateDemo() {
-    console.log("App.populateDemo(): BEGIN");
     this.menu = this._data.resetMenu();
     // menu should be an array, all elements of which should be [title,function] or null.
-    console.log("App.populateDemo(): END");
   }
 
   submit() {
-    model = this._model;
+    console.log("submit");
+    let model = this._model;
 
     // Fix ordinal.
     var float = parseFloat(model.ordinal);

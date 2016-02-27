@@ -39,7 +39,7 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
   // return: promise
   function _downloadFile(filename) {
     var url = _directory+filename;
-    //console.log("_downloadFile",url);
+    //console.log("Downloading file.",url);
 
     var request = new XMLHttpRequest();
     var deferred = Q.defer();
@@ -61,6 +61,7 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
         return;
       }
 
+      //console.log("File downloaded.",url);
       deferred.resolve(request.responseText);
     }
 
@@ -76,7 +77,7 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
   }
 
   function _listToData(listName,list,options) {
-    //console.log(listName+": Adding "+list.length+" lines.",options);
+    console.log(listName+": Adding "+list.length+" lines.",options);
     _data[listName] = [];
     list.forEach(function(line) {
       var split = _processLine(line,options);
