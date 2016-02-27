@@ -1,40 +1,38 @@
 import {digit} from "../util/random"
 
-export class UnitedStates {
+function _zipCode() {
+  return ""+digit(5);
+};
 
-  zipCode() {
-    return ""+digit(5);
-  };
+function _zipPlus4() {
+  return _zipCode()+"-"+digit(4);
+};
 
-  zipPlus4() {
-    return zipCode()+"-"+digit(4);
-  };
-
-  phoneNumber(options) {
-    return function() {
-      if (options == null) options = {};
-      if (!options.format) options.format = "0##-####";
-      var result = "";
-      for (var i = 0; i < options.format.length; i++) {
-        if (options.format[i] == '#') {
-          result += digit();
-        } else {
-          result += options.format[i];
-        }
+function _phoneNumber(options) {
+  return function() {
+    if (options == null) options = {};
+    if (!options.format) options.format = "0##-####";
+    var result = "";
+    for (var i = 0; i < options.format.length; i++) {
+      if (options.format[i] == '#') {
+        result += digit();
+      } else {
+        result += options.format[i];
       }
-      return result;
-    };
-  }
+    }
+    return result;
+  };
+}
 
-  menuItems = [
-    ["0##-####",this.phoneNumber({format:"0##-####"})],
-    ["###-0##-####",this.phoneNumber({format:"###-0##-####"})],
-    ["Zip Code", this.zipCode],
-    ["Zip+4 Code", this.zipPlus4]
-  ];
+export default {
+    phoneNumber: _phoneNumber,
+    zipCode: _zipCode,
+    zipPlus4: _zipPlus4,
 
-  constructor(dd) {
-
-  }
-
+    menuItems: [
+      ["0##-####",_phoneNumber({format:"0##-####"})],
+      ["###-0##-####",_phoneNumber({format:"###-0##-####"})],
+      ["Zip Code", _zipCode],
+      ["Zip+4 Code", _zipPlus4]
+    ]
 };

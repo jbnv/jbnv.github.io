@@ -5,8 +5,8 @@ function powrandom(max) {
 
 function digit(count) {
   if (!count) count = 1;
-  outbound = "";
-  for (i = 0; i < count; i++) { outbound += Math.floor(10*Math.random()); }
+  let outbound = "";
+  for (let i = 0; i < count; i++) { outbound += Math.floor(10*Math.random()); }
   return outbound;
 }
 
@@ -33,7 +33,7 @@ function alphanumeric(options) {
   if (!options.transform) options.transform = function(x) { return x; };
 
   var outbound = "";
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     outbound += character(options.characters);
   }
   return outbound;

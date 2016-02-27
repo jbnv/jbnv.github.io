@@ -1,4 +1,4 @@
-import {Universal} from "./universal"
+import Universal from "./universal"
 
 export class DummyData {
 
@@ -58,9 +58,9 @@ export class DummyData {
 
   resetMenu() {
 
-    var menuSpec = [];
+    let menuSpec = [];
 
-    var engine = this.language();
+    let engine = this.language();
     if (engine) {
       Array.prototype.push.apply(menuSpec, engine.menuItems);
       menuSpec.push(null); // separator
@@ -76,15 +76,12 @@ export class DummyData {
       console.log("_countries: No engine for "+this.countryName()+".");
     }
 
-    var universal = new Universal()
-    Array.prototype.push.apply(menuSpec, universal.menuItems);
+    Array.prototype.push.apply(menuSpec, Universal.menuItems);
 
     return menuSpec;
   }
 
   constructor(context) {
-    console.log("DummyData.constructor BEGIN",context);
     this._context = context;
-    console.log("DummyData.constructor END");
   }
 };

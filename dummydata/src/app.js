@@ -6,7 +6,7 @@ import {English} from './languages/english';
 // import {Japanese} from './languages/japanese';
 // import {Spanish} from './languages/spanish';
 
-import {UnitedStates} from './countries/united-states';
+import UnitedStates from './countries/united-states';
 // import {Canada} from './countries/canada';
 
 export class App {
@@ -46,7 +46,7 @@ export class App {
     this._data = new DummyData(this._model);
 
     this._data.addLanguage({
-      'English': new English()
+      'English': {} //new English()
       // 'German': new German(),
       // 'Greek': new Greek(),
       // 'Japanese': new Japanese(),
@@ -54,7 +54,7 @@ export class App {
     });
 
     this._data.addCountry({
-      'UnitedStates': new UnitedStates()
+      'UnitedStates': UnitedStates
       // 'Canada': new Canada(),
     });
 
