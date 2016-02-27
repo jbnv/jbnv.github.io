@@ -1,6 +1,6 @@
 import {DummyData} from './core/data';
 
-import {English} from './languages/english';
+import English from './languages/english';
 // import {German} from './languages/german';
 // import {Greek} from './languages/greek';
 // import {Japanese} from './languages/japanese';
@@ -46,7 +46,7 @@ export class App {
     this._data = new DummyData(this._model);
 
     this._data.addLanguage({
-      'English': {} //new English()
+      'English': English
       // 'German': new German(),
       // 'Greek': new Greek(),
       // 'Japanese': new Japanese(),

@@ -2,15 +2,13 @@ import Q from 'q'
 import {shuffle} from "../util/random"
 import {GlobalOrdinal} from "./ordinal"
 
-// dd: DummyData() result
 // group: 'Languages'|'Countries'
 // subgroup: string
 // sourceType: 'txt'|'json'|array
-export function DummyDataEngine(dd,group,subgroup,sourceType,options) {
+export function DummyDataEngine(group,subgroup,sourceType,options) {
 
   var _data = {},
 
-      _dd = dd,
       _group = group,
       _subgroup = subgroup,
       _sourceType = sourceType,
@@ -159,7 +157,7 @@ export function DummyDataEngine(dd,group,subgroup,sourceType,options) {
       return "";
     }
 
-    var ordinal = GlobalOrdinal() % list.length;
+    var ordinal = Math.floor(list.length*Math.random());//TEMP; needs to be GlobalOrdinal() % list.length;
     var itemArray = list[ordinal];
     if (itemArray == null) {
       console.log("Item "+ordinal+" of list '"+listName+"' is null.")
