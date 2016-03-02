@@ -5,7 +5,7 @@ String.prototype.toTitleCase = function()
 
 String.prototype.toInitialCase = function()
 {
-    return this.charAt(0).toUpperCase() + str.substr(1).toLowerCase();
+    return this.charAt(0).toUpperCase() + this.substr(1).toLowerCase();
 }
 
 Array.prototype.randomElement = function() {
