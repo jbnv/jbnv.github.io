@@ -1,5 +1,4 @@
 import {inject} from 'aurelia-framework';
-import {Context} from './core/context';
 import {DummyData} from './core/data';
 
 import English from './languages/english';
@@ -11,20 +10,19 @@ import Japanese from './languages/japanese';
 import UnitedStates from './countries/united-states';
 // import Canada from './countries/canada';
 
-@inject(Context)
 export class Demo {
 
   context = {};
   menu = [];
 
   populate() {
+    console.log("Demo.populate",this.context);
     this.menu = this._data.resetMenu();
     // menu should be an array, all elements of which should be [title,function] or null.
   }
 
-  constructor(context) {
+  constructor() {
     console.log("Demo.constructor");
-    this.context = new Context();
 
     this._data = new DummyData(this.context);
 
@@ -40,7 +38,13 @@ export class Demo {
       'UnitedStates': UnitedStates
       // 'Canada': new Canada(),
     });
+  }
 
+  bind(bindingContext, overrideContext) {
+    this.context = overrideContext.bindingContext.context;
+  }
+
+  attached() {
     this.populate();
   }
 }

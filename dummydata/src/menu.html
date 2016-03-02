@@ -1,4 +1,4 @@
-<template bindable="router">
+<template bindable="context">
   <require from="bootstrap/css/bootstrap.css"></require>
   <require from="font-awesome/css/font-awesome.css"></require>
 
@@ -44,7 +44,7 @@
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
-        <li class="loader" if.bind="router.isNavigating">
+        <li class="loader" if.bind="context.isNavigating">
           <i class="fa fa-spinner fa-spin fa-2x"></i>
         </li>
         <li><a href="https://github.com/jbnv/jbnv.github.io/tree/master/dummydata"><i class="fa fa-github"></i></a></li>
