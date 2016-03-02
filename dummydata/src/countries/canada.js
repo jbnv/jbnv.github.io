@@ -1,23 +1,23 @@
-import {digit,character} from "../util/random"
+import {digit,character,phoneNumber} from "../util/random"
 
-postalCodeLetters = "ABCEFGHJKLMNPRSTUVWXY";
+var _postalCodeLetters = "ABCEFGHJKLMNPRSTUVWXY";
 
-function postalCodeLetter() {
-  return character(postalCodeLetters);
+function _postalCodeLetter() {
+  return character(_postalCodeLetters);
 };
 
-export class Canada {
+function _postalCode() {
+  return _postalCodeLetter()+digit()+_postalCodeLetter()+" "+digit()+_postalCodeLetter()+digit();
+};
 
-  postalCode() {
-    return postalCodeLetter()+digit()+postalCodeLetter()+" "+digit()+postalCodeLetter()+digit();
-  };
+export default {
+  phoneNumber: phoneNumber({format:"0##-####"}),
+  phoneNumberWithAreaCode: phoneNumber({format:"###-0##-####"}),
+  postalCode: _postalCode,
 
-  menuItems = [
-    ["Postal Code", postalCode]
-  ];
-
-  constructor(dd) {
-
-  }
-
+  menuItems: [
+    ["0##-####",phoneNumber({format:"0##-####"})],
+    ["###-0##-####",phoneNumber({format:"###-0##-####"})],
+    ["Postal Code", _postalCode]
+  ]
 };
