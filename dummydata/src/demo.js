@@ -15,7 +15,7 @@ import UnitedStates from './countries/united-states';
 export class Demo {
 
   context = {};
-  menu = [["Title",function() { return "result"; }]];
+  menu = [];
 
   populate() {
     this.menu = this._data.resetMenu();
@@ -26,7 +26,7 @@ export class Demo {
     console.log("Demo.constructor");
     this.context = new Context();
 
-    this._data = new DummyData(this);
+    this._data = new DummyData(this.context);
 
     this._data.addLanguage({
       'English': English,

@@ -2,7 +2,10 @@ import {bindable} from 'aurelia-framework';
 
 var _languages = [
   { slug: 'en', title: 'English' },
-  { slug: 'jp', title: 'Japanese' }
+  { slug: 'de', title: 'German' },
+  { slug: 'gk', title: 'Greek' },
+  { slug: 'jp', title: 'Japanese' },
+  { slug: 'es', title: 'Spanish' }
 ];
 
 var _countries = [
