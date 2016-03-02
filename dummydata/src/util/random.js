@@ -51,4 +51,20 @@ function shuffle(array) {
     return array;
 }
 
-export { alphanumeric, character, digit, powrandom, shuffle }
+function phoneNumber(options) {
+  return function() {
+    if (options == null) options = {};
+    if (!options.format) options.format = "0##-####";
+    var result = "";
+    for (var i = 0; i < options.format.length; i++) {
+      if (options.format[i] == '#') {
+        result += digit();
+      } else {
+        result += options.format[i];
+      }
+    }
+    return result;
+  };
+}
+
+export { alphanumeric, character, digit, phoneNumber, powrandom, shuffle }
