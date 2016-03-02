@@ -8,7 +8,7 @@ import Japanese from './languages/japanese';
 // import Spanish from './languages/spanish';
 
 import UnitedStates from './countries/united-states';
-// import Canada from './countries/canada';
+import Canada from './countries/canada';
 
 export class Demo {
 
@@ -22,8 +22,6 @@ export class Demo {
   }
 
   constructor() {
-    console.log("Demo.constructor");
-
     this._data = new DummyData();
 
     this._data.addLanguage({
@@ -35,13 +33,15 @@ export class Demo {
     });
 
     this._data.addCountry({
-      'us': UnitedStates
-      // 'ca': Canada,
+      'us': UnitedStates,
+      'ca': Canada
     });
   }
 
   bind(bindingContext, overrideContext) {
     this.context = overrideContext.bindingContext.context;
+    this.context.subscribe("setLanguage",() => this.populate());
+    this.context.subscribe("setCountry",() => this.populate());
   }
 
   attached() {
