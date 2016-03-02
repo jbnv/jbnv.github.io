@@ -13,12 +13,28 @@ import Canada from './countries/canada';
 export class Demo {
 
   context = {};
+
+  // array of {title,value,showSpinner} or null (separator).
   menu = [];
 
+  // Evaluate each item in the menu, and
   populate() {
     //TODO Wait for the data to actually be available before populating.
-    this.menu = this._data.menu(this.context.language,this.context.country);
-    // menu should be an array, all elements of which should be [title,function] or null.
+    let menuWithFunctions = this._data.menu(this.context.language,this.context.country);
+    let evaluatedMenu = [];
+    menuWithFunctions.forEach(function(e) {
+      if (e) {
+        let value = e[1]();
+        evaluatedMenu.push({
+          title: e[0],
+          value: value,
+          showSpinner: !value
+        });
+      } else {
+        evaluatedMenu.push(null);
+      }
+    });
+    this.menu = evaluatedMenu;
   }
 
   constructor() {

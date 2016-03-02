@@ -12,8 +12,8 @@
       <table class="table">
         <tr><th>Menu Item</th><th>Sample Result</th></tr>
         <tr repeat.for="item of menu">
-          <td><b>${item[0]}</b></td>
-          <td>${item[1]()}</td>
+          <td><b>${item.title}</b></td>
+          <td><i class="fa fa-spinner" if.bind="item.showSpinner"></i>${item.value}</td>
         </tr>
       </table>
     </div>
