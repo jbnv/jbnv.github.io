@@ -1,29 +1,35 @@
-var Japanese = function(dd) {
+import { DummyDataEngine } from "../core/engine"
+import "../util/extensions"
 
-  var _data = new DummyDataEngine(dd,'Languages','Japanese','json');
+let _data = new DummyDataEngine('Languages','Japanese','json');
 
-  var maleNameSelector = function() { return _data('JapaneseMaleNames'); };
+function _maleNameSelector() { return _data('JapaneseMaleNames'); };
 
-  function maleName() { return toInitialCase(maleNameSelector()); }
+function _maleName() { return _maleNameSelector().toInitialCase(); }
 
-  var femaleNameSelector = function() { return _data('JapaneseFemaleNames'); };
+function _femaleNameSelector() { return _data('JapaneseFemaleNames'); };
 
-  function femaleName() { return toInitialCase(femaleNameSelector()); }
+function _femaleName() { return _femaleNameSelector().toInitialCase(); }
 
-  var surnameSelector = function() { return _data('JapaneseSurnamePrefixes')+_data('JapaneseSurnameSuffixes'); }
+function _surnameSelector() { return _data('JapaneseSurnamePrefixes')+_data('JapaneseSurnameSuffixes'); }
 
-  function surname() { return toInitialCase(surnameSelector()); }
+function _surname() { return _surnameSelector().toInitialCase(); }
 
-  function maleFullName() { return surname()+" "+maleName(); };
+function _maleFullName() { return _surname()+" "+_maleName(); };
 
-  function femaleFullName() { return surname()+" "+femaleName(); };
+function _femaleFullName() { return _surname()+" "+_femaleName(); };
 
-  this.menuItems = [
-    ["Male Name", maleName],
-    ["Female Name", femaleName],
-    ["Surname", surname],
-    ["Male Full Name", maleFullName],
-    ["Female Full Name", femaleFullName]
-  ];
+export default {
+  maleName: _maleName,
+  femaleName: _femaleName,
+  surname: _surname,
+  maleFullName: _maleFullName,
 
-};
+  menuItems: [
+    ["Male Name", _maleName],
+    ["Female Name", _femaleName],
+    ["Surname", _surname],
+    ["Male Full Name", _maleFullName],
+    ["Female Full Name", _femaleFullName]
+  ]
+}

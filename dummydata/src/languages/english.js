@@ -118,68 +118,67 @@ function _femaleFullName() {
   //   function() { return [_surname()+"'s",singularOrPlural(0.50)]; }
   // ]);
 
+let _cardinalDirectionsForAddresses = new Selector([
+  [10,['']],
+  [4,['N.','S.','E.','W.']],
+  [1,['NW','NE','SW','SE']]
+]);
 
-  // cardinalDirectionsForAddresses = new Selector([
-  //   [10,['']],
-  //   [4,['N.','S.','E.','W.']],
-  //   [1,['NW','NE','SW','SE']]
-  // ]);
-  //
-  // streetName = new Selector([
-  //   function() { return data('EnglishAnimals'); },
-  //   function() { return _color(); },
-  //   function() { return data('EnglishOrdinalNumbers'); },
-  //   function() { return data('EnglishPlants'); },
-  //   function() { return _maleName(); },
-  //   function() { return _femaleName(); },
-  //   function() { return _surname(); },
-  //   function() { return _maleFullName(); },
-  //   function() { return _femaleFullName(); },
-  //   function() { return data('EnglishAdjectives')+' '+data('EnglishTerrainWords'); },
-  //   function() { return data('EnglishTerrainWords')+['side','view'].randomElement(); }
-  // ]);
-  //
-  // streetAddress() {
-  //   var number = Math.floor(Math.pow(100000,Math.random()));
-  //   var cardinalDirection = _cardinalDirectionsForAddresses();
-  //   var streetType = data('EnglishRoadTypes');
-  //   var address
-  //     = "" + number + " "
-  //     + cardinalDirection + (cardinalDirection == '' ? '' : " ")
-  //     + _streetName() + " " + streetType;
-  //   return address.toTitleCase();
-  // }
-  //
-  // cardinalDirectionsForCity = new Selector([
-  //   [10,['']],
-  //   [4,['North','South','East','West']],
-  //   [1,['Upper','Lower']]
-  // ]);
-  //
-  // cityModifiers = ['town','ton','ville','burg',' City',' Springs',' Heights',' Town'];
-  //
-  // citySelector = new Selector([
-  //   function() { return _surname(); },
-  //   function() { return _surname()+cityModifiers.randomElement(); },
-  //   function() { return _surname()+cityModifiers.randomElement(); },
-  //   function() { return _maleName()+cityModifiers.randomElement(); },
-  //   function() { return _femaleName()+cityModifiers.randomElement(); },
-  //   function() { return "Lake "+_surname(); },
-  //   function() { return "Lake "+_maleName(); },
-  //   function() { return "Lake "+_femaleName(); },
-  //   function() { return "Mount "+_surname(); },
-  //   function() { return "Mount "+_maleName(); },
-  //   function() { return "Mount "+_femaleName(); }
-  // ]);
-  //
-  // city() {
-  //   var cardinalDirection = cardinalDirectionsForCity();
-  //   var city
-  //     = cardinalDirection + (cardinalDirection == '' ? '' : " ")
-  //     + _citySelector();
-  //   return toTitleCase(city);
-  // }
-  //
+let _streetName = new Selector([
+  function() { return data('EnglishAnimals'); },
+  function() { return _color(); },
+  function() { return data('EnglishOrdinalNumbers'); },
+  function() { return data('EnglishPlants'); },
+  function() { return _maleName(); },
+  function() { return _femaleName(); },
+  function() { return _surname(); },
+  function() { return _maleFullName(); },
+  function() { return _femaleFullName(); },
+  function() { return data('EnglishAdjectives')+' '+data('EnglishTerrainWords'); },
+  function() { return data('EnglishTerrainWords')+['side','view'].randomElement(); }
+]);
+
+function _streetAddress() {
+  var number = Math.floor(Math.pow(100000,Math.random()));
+  var cardinalDirection = _cardinalDirectionsForAddresses();
+  var streetType = data('EnglishRoadTypes');
+  var address
+    = "" + number + " "
+    + cardinalDirection + (cardinalDirection == '' ? '' : " ")
+    + _streetName() + " " + streetType;
+  return address.toTitleCase();
+}
+
+let _cardinalDirectionsForCity = new Selector([
+  [10,['']],
+  [4,['North','South','East','West']],
+  [1,['Upper','Lower']]
+]);
+
+let _cityModifiers = ['town','ton','ville','burg',' City',' Springs',' Heights',' Town'];
+
+let _citySelector = new Selector([
+  function() { return _surname(); },
+  function() { return _surname()+cityModifiers.randomElement(); },
+  function() { return _surname()+cityModifiers.randomElement(); },
+  function() { return _maleName()+cityModifiers.randomElement(); },
+  function() { return _femaleName()+cityModifiers.randomElement(); },
+  function() { return "Lake "+_surname(); },
+  function() { return "Lake "+_maleName(); },
+  function() { return "Lake "+_femaleName(); },
+  function() { return "Mount "+_surname(); },
+  function() { return "Mount "+_maleName(); },
+  function() { return "Mount "+_femaleName(); }
+]);
+
+function _city() {
+  var cardinalDirection = _cardinalDirectionsForCity();
+  var city
+    = cardinalDirection + (cardinalDirection == '' ? '' : " ")
+    + _citySelector();
+  return toTitleCase(city);
+}
+
   // ipsum_noun_selector = new Selector([
   //   function() { return data('EnglishAnimals'); }, //TEMP _dataOptions removed from each
   //   function() { return data('EnglishPlants'); },
@@ -231,11 +230,13 @@ function _femaleFullName() {
 
 export default {
   color: _color,
-  maleName: _maleName,
   femaleName: _femaleName,
+  maleName: _maleName,
   surname: _surname,
   maleFullName: _maleFullName,
   femaleFullName: _femaleFullName,
+  streetAddress: _streetAddress,
+  city: _city,
 
   menuItems: [
     ["Male Name", _maleName],
@@ -245,8 +246,8 @@ export default {
     ["Female Full Name", _femaleFullName],
     null,
     ["Color", _color],
-    // ["Street Address",_streetAddress],
-    // ["City",_city],
+    ["Street Address",_streetAddress],
+    ["City",_city],
     // null,
     // ["Ipsum 1 sentence",_ipsum],
     // ["Ipsum 3 sentences",_ipsum,{count:3}],
