@@ -34,14 +34,22 @@ export class Context {
   languages = _languages;
   countries = _countries;
 
+  _callbacks = [];
+
+  subscribe(eventName,callback) {
+    this._callbacks.push([eventName,callback]);
+  }
+
   setLanguage(slug) {
     this.language = slug;
     this.languageName = _languages.filter(l => l.slug == slug)[0].title;
+    this._callbacks.filter(cb => cb[0] == "setLanguage").forEach(cb => cb[1]());
   }
 
   setCountry(slug) {
     this.country = slug;
     this.countryName = _countries.filter(l => l.slug == slug)[0].title;
+    this._callbacks.filter(cb => cb[0] == "setCountry").forEach(cb => cb[1]());
   }
 
 }
