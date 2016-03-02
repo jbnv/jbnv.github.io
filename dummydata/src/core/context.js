@@ -34,4 +34,14 @@ export class Context {
   languages = _languages;
   countries = _countries;
 
+  setLanguage(slug) {
+    this.language = slug;
+    this.languageName = _languages.filter(l => l.slug == slug)[0].title;
+  }
+
+  setCountry(slug) {
+    this.country = slug;
+    this.countryName = _countries.filter(l => l.slug == slug)[0].title;
+  }
+
 }

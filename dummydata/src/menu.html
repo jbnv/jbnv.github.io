@@ -21,7 +21,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-language"></i> ${context.languageName} <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li repeat.for="language of context.languages">
-              <a href.bind="language.slug">${language.title}</a>
+              <a href="#" click.trigger="updateLanguage(language.slug)">${language.title}</a>
             </li>
           </ul>
         </li>
@@ -29,7 +29,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-globe"></i> ${context.countryName} <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li repeat.for="country of context.countries">
-              <a href.bind="country.slug">${country.title}</a>
+              <a href="#" click.trigger="updateCountry(country.slug)">${country.title}</a>
             </li>
           </ul>
         </li>
