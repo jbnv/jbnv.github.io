@@ -17,6 +17,17 @@ function _processLine(line,options) {
   return split;
 }
 
+function _listToData(listName,list,options) {
+  console.log(listName+": Adding "+list.length+" lines.",options);
+  result = [];
+  list.forEach(function(line) {
+    var split = _processLine(line,options);
+    result.push(split);
+  });
+  shuffle(result);
+  return result;
+}
+
 // group: 'Languages'|'Countries'
 // subgroup: string
 // sourceType: 'txt'|'json'|array
@@ -38,14 +49,8 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
     return null;
   }
 
-  function _listToData(listName,list,options) {
-    //console.log(listName+": Adding "+list.length+" lines.",options);
-    _data[listName] = [];
-    list.forEach(function(line) {
-      var split = _processLine(line,options);
-      _data[listName].push(split);
-    });
-    _shuffle(_data[listName]);
+  function _fileData(slug,content) {
+    _data[slug] = content;
   }
 
   if (sourceType == 'txt') {
