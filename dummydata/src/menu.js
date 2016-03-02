@@ -10,6 +10,11 @@ export class Menu {
     this.context.setCountry(slug);
   }
 
+  regenerate() {
+    console.log("regenerate()");
+    this.context.regenerate();
+  }
+
   bind(bindingContext, overrideContext) {
     this.context = overrideContext.bindingContext.context;
   }

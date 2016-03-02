@@ -40,8 +40,7 @@ export class Demo {
 
   bind(bindingContext, overrideContext) {
     this.context = overrideContext.bindingContext.context;
-    this.context.subscribe("setLanguage",() => this.populate());
-    this.context.subscribe("setCountry",() => this.populate());
+    this.context.subscribe("regenerate",() => this.populate());
   }
 
   attached() {

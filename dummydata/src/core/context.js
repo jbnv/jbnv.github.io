@@ -44,12 +44,18 @@ export class Context {
     this.language = slug;
     this.languageName = _languages.filter(l => l.slug == slug)[0].title;
     this._callbacks.filter(cb => cb[0] == "setLanguage").forEach(cb => cb[1]());
+    this.regenerate();
   }
 
   setCountry(slug) {
     this.country = slug;
     this.countryName = _countries.filter(l => l.slug == slug)[0].title;
     this._callbacks.filter(cb => cb[0] == "setCountry").forEach(cb => cb[1]());
+    this.regenerate();
+  }
+
+  regenerate() {
+    this._callbacks.filter(cb => cb[0] == "regenerate").forEach(cb => cb[1]());
   }
 
 }
