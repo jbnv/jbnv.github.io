@@ -24,8 +24,8 @@ function _countryItemToRoute(item) {
 export class Context {
   @bindable title = 'Context';
 
-  language = '';
-  country = '';
+  language = 'en';
+  country = 'us';
 
   languageName = 'English';
   countryName = 'United States';

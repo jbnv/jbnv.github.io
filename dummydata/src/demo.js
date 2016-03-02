@@ -16,27 +16,27 @@ export class Demo {
   menu = [];
 
   populate() {
-    console.log("Demo.populate",this.context);
-    this.menu = this._data.resetMenu();
+    //TODO Wait for the data to actually be available before populating.
+    this.menu = this._data.menu(this.context.language,this.context.country);
     // menu should be an array, all elements of which should be [title,function] or null.
   }
 
   constructor() {
     console.log("Demo.constructor");
 
-    this._data = new DummyData(this.context);
+    this._data = new DummyData();
 
     this._data.addLanguage({
-      'English': English,
-      // 'German': new German(),
-      // 'Greek': new Greek(),
-      'Japanese': Japanese,
-      // 'Spanish': new Spanish()
+      'en': English,
+      // 'de': German,
+      // 'gk': Greek,
+      'jp': Japanese,
+      // 'es': Spanish
     });
 
     this._data.addCountry({
-      'UnitedStates': UnitedStates
-      // 'Canada': new Canada(),
+      'us': UnitedStates
+      // 'ca': Canada,
     });
   }
 

@@ -176,7 +176,7 @@ function _city() {
   var city
     = cardinalDirection + (cardinalDirection == '' ? '' : " ")
     + _citySelector();
-  return toTitleCase(city);
+  return city.toTitleCase();
 }
 
   // ipsum_noun_selector = new Selector([
