@@ -1,4 +1,14 @@
 import {bindable} from 'aurelia-framework';
+import {DummyData} from './data';
+
+import English from '../languages/english';
+// import German from '../languages/german';
+// import Greek from '../languages/greek';
+import Japanese from '../languages/japanese';
+// import Spanish from '../languages/spanish';
+
+import UnitedStates from '../countries/united-states';
+import Canada from '../countries/canada';
 
 var _languages = [
   { slug: 'en', title: 'English' },
@@ -13,14 +23,6 @@ var _countries = [
   { slug: 'ca', title: 'Canada' }
 ];
 
-function _languageItemToRoute(item) {
-  return { route: 'l/'+item.slug, name: slug.title, title: slug.title, nav: true };
-}
-
-function _countryItemToRoute(item) {
-  return { route: 'c/'+item.slug, name: slug.title, title: slug.title, nav: true };
-}
-
 export class Context {
   @bindable title = 'Context';
 
@@ -34,7 +36,30 @@ export class Context {
   languages = _languages;
   countries = _countries;
 
+  _data = {};
+
   _callbacks = [];
+
+  _buildData() {
+    this._data = new DummyData();
+
+    this._data.addLanguage({
+      'en': English,
+      // 'de': German,
+      // 'gk': Greek,
+      'jp': Japanese,
+      // 'es': Spanish
+    });
+
+    this._data.addCountry({
+      'us': UnitedStates,
+      'ca': Canada
+    });
+  }
+
+  menu() {
+    return this._data.menu(this.language,this.country);
+  }
 
   subscribe(eventName,callback) {
     this._callbacks.push([eventName,callback]);
@@ -58,4 +83,7 @@ export class Context {
     this._callbacks.filter(cb => cb[0] == "regenerate").forEach(cb => cb[1]());
   }
 
+  constructor() {
+    this._buildData();
+  }
 }
