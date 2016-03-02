@@ -1,66 +1,40 @@
-import {DummyData} from './core/data';
-
-import English from './languages/english';
-// import {German} from './languages/german';
-// import {Greek} from './languages/greek';
-// import {Japanese} from './languages/japanese';
-// import {Spanish} from './languages/spanish';
-
-import UnitedStates from './countries/united-states';
-// import {Canada} from './countries/canada';
+// var _languages = [
+//   { slug: 'en', title: 'English' },
+//   { slug: 'jp', title: 'Japanese' }
+// ];
+//
+// var _countries = [
+//   { slug: 'us', title: 'United States' },
+//   { slug: 'ca', title: 'Canada' }
+// ];
+//
+// function _languageItemToRoute(item) {
+//   return { route: 'l/'+item.slug, name: slug.title, title: slug.title, nav: true };
+// }
+//
+// function _countryItemToRoute(item) {
+//   return { route: 'c/'+item.slug, name: slug.title, title: slug.title, nav: true };
+// }
 
 export class App {
 
-  _data = {};
+  languageName = 'English';
+  countryName = 'United States';
 
-  _model = {
-    language: 'English',
-    country: 'UnitedStates',
-    ordinal: 0
-  };
+  configureRouter(config, router){
+    config.title = 'DummyData';
 
-  menu = [];
+    let map = [];
+    // _languages.forEach(item => map.push(_languageItemToRoute(item)));
+    // _countries.forEach(item => map.push(_countryItemToRoute(item)));
+    map.push({ route: 're', name: 'Regenerate', title:'Regenerate' });
 
-  populateDemo() {
-    this.menu = this._data.resetMenu();
-    // menu should be an array, all elements of which should be [title,function] or null.
-  }
+    config.map(map);
 
-  submit() {
-    console.log("submit");
-    let model = this._model;
-
-    // Fix ordinal.
-    var float = parseFloat(model.ordinal);
-    if (Number.isNaN(float)) float = 0;
-    model.ordinal = float;
-
-    this.populateDemo();
-
-  }
-
-  constructor() {
-    //console.log("App.constructor(): BEGIN",DummyData);
-
-    this._data = new DummyData(this._model);
-
-    this._data.addLanguage({
-      'English': English
-      // 'German': new German(),
-      // 'Greek': new Greek(),
-      // 'Japanese': new Japanese(),
-      // 'Spanish': new Spanish()
-    });
-
-    this._data.addCountry({
-      'UnitedStates': UnitedStates
-      // 'Canada': new Canada(),
-    });
-
-    this._data.resetMenu();
-
-    this.populateDemo();
-
-    //console.log("App.constructor(): END");
+    // router.languageName = 'English';
+    // router.countryName = 'UnitedStates';
+    // router.ordinal = 0;
+    // console.log(router);
+    this.router = router;
   }
 }
