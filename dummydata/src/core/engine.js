@@ -2,6 +2,21 @@ import Q from 'q'
 import {shuffle} from "../util/random"
 import {GlobalOrdinal} from "./ordinal"
 
+import download from "../util/downloader"
+
+function _processLine(line,options) {
+  if (line.length == 0) return; // filter out blank lines
+  var split = line.split("|");
+  if (options != null && options.transform != null) {
+    split = options.transform(split);
+    if (split == null) {
+      console.log(listName,"transform function produces null split!");
+      return;
+    }
+  }
+  return split;
+}
+
 // group: 'Languages'|'Countries'
 // subgroup: string
 // sourceType: 'txt'|'json'|array
@@ -23,61 +38,8 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
     return null;
   }
 
-  function _processLine(line,options) {
-    if (line.length == 0) return; // filter out blank lines
-    var split = line.split("|");
-    if (options != null && options.transform != null) {
-      split = options.transform(split);
-      if (split == null) {
-        console.log(listName,"transform function produces null split!");
-        return;
-      }
-    }
-    return split;
-  }
-
-  // return: promise
-  function _downloadFile(filename) {
-    var url = _directory+filename;
-    //console.log("Downloading file.",url);
-
-    var request = new XMLHttpRequest();
-    var deferred = Q.defer();
-
-    request.open("GET", url, true);
-    request.onload = onload;
-    request.onerror = onerror;
-    request.onprogress = onprogress;
-    request.send();
-
-    function onload() {
-      if (request.status !== 200) {
-        deferred.reject(new Error("Status code was " + request.status));
-        return;
-      }
-
-      if (request.responseText == "") {
-        deferred.reject(new Error("No data returned!"));
-        return;
-      }
-
-      //console.log("File downloaded.",url);
-      deferred.resolve(request.responseText);
-    }
-
-    function onerror() {
-      deferred.reject(new Error("Can't XHR " + JSON.stringify(url)));
-    }
-
-    function onprogress(event) {
-      deferred.notify(event.loaded / event.total);
-    }
-
-    return deferred.promise;
-  }
-
   function _listToData(listName,list,options) {
-    console.log(listName+": Adding "+list.length+" lines.",options);
+    //console.log(listName+": Adding "+list.length+" lines.",options);
     _data[listName] = [];
     list.forEach(function(line) {
       var split = _processLine(line,options);
@@ -94,7 +56,7 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
       var listName = a[0];
       var fileOptions = a.length > 1 && _engineOption(a[1]);
 
-      return _downloadFile(listName+'.txt')
+      return download(_directory+listName+'.txt')
       .then(
         function(text) {
           _listToData(listName,text.split("\n"),fileOptions);
@@ -107,7 +69,7 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
     };
 
     var downloadGroupList =
-      _downloadFile(subgroup+'.txt')
+      download(_directory+subgroup+'.txt')
       .then(
         function(text) {
           return text.split("\n").map(lineFn);
@@ -129,7 +91,7 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
   } else if (sourceType == 'json') {
 
     // Download an entire language definition that was minified into a JSON file.
-    _downloadFile(subgroup+'.json')
+    download(_directory+subgroup+'.json')
     .then(
       function(json) {
         var data = JSON.parse(json);
