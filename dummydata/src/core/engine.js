@@ -4,6 +4,12 @@ import {GlobalOrdinal} from "./ordinal"
 
 import download from "../util/downloader"
 
+var _repositoryURL = 'https://raw.githubusercontent.com/jbnv/WordLists/master/';
+
+function _repository(group,subgroup) {
+  return _repositoryURL+group+'/'+subgroup+'/';
+}
+
 function _processLine(line,options) {
   if (line.length == 0) return; // filter out blank lines
   var split = line.split("|");
@@ -19,89 +25,65 @@ function _processLine(line,options) {
 
 function _listToData(listName,list,options) {
   console.log(listName+": Adding "+list.length+" lines.",options);
-  result = [];
-  list.forEach(function(line) {
-    var split = _processLine(line,options);
-    result.push(split);
-  });
+  let result = list.map(line => _processLine(line,options));
   shuffle(result);
   return result;
 }
 
-// group: 'Languages'|'Countries'
-// subgroup: string
-// sourceType: 'txt'|'json'|array
-export function DummyDataEngine(group,subgroup,sourceType,options) {
+// Returns a promise.
+function _downloadText(group,subgroup,options) {
 
-  var _data = {},
-
-      _group = group,
-      _subgroup = subgroup,
-      _sourceType = sourceType,
-      _options = options,
-
-      _repositoryURL = 'https://raw.githubusercontent.com/jbnv/WordLists/master/',
-      _directory = _repositoryURL+_group+'/'+_subgroup+'/';
-
-  function _engineOption(name) {
+  function option(name) {
     if (!name) return null;
     if (options) return options[name];
     return null;
   }
 
-  function _fileData(slug,content) {
-    _data[slug] = content;
-  }
+  let _dir = _repository(group,subgroup);
 
-  if (sourceType == 'txt') {
+  var lineFn = function(line) {
+    if (!line) return null;
+    var a = line.split("|");
+    var listName = a[0];
+    var fileOptions = a.length > 1 && option(a[1]);
 
-    var lineFn = function(line) {
-      if (!line) return null;
-      var a = line.split("|");
-      var listName = a[0];
-      var fileOptions = a.length > 1 && _engineOption(a[1]);
-
-      return download(_directory+listName+'.txt')
-      .then(
-        function(text) {
-          _listToData(listName,text.split("\n"),fileOptions);
-          return listName+'.txt';
-        },
-        function(error) {
-          console.error(error);
-        }
-      );
-    };
-
-    var downloadGroupList =
-      download(_directory+subgroup+'.txt')
-      .then(
-        function(text) {
-          return text.split("\n").map(lineFn);
-        },
-        function(error) {
-          console.error(error);
-        }
-      );
-
-    Q.allSettled(downloadGroupList)
+    return download(_dir+listName+'.txt')
     .then(
-      function (results) {
-        //console.log("Download results:",results);
+      function(text) {
+        _listToData(listName,text.split("\n"),fileOptions);
+        return listName+'.txt';
       },
       function(error) {
         console.error(error);
-      });
+      }
+    );
+  };
 
-  } else if (sourceType == 'json') {
+  var downloadGroupList =
+    download(_dir+subgroup+'.txt')
+    .then(
+      function(text) {
+        return text.split("\n").map(lineFn);
+      },
+      function(error) {
+        console.error(error);
+      }
+    );
 
-    // Download an entire language definition that was minified into a JSON file.
-    download(_directory+subgroup+'.json')
+  return Q.allSettled(downloadGroupList);
+}
+
+// Download an entire language definition that was minified into a JSON file.
+// Returns a promise.
+function _downloadJson(group,subgroup,options) {
+
+  let outbound =
+    download(_repository(group,subgroup)+subgroup+'.json')
     .then(
       function(json) {
         var data = JSON.parse(json);
         for (var listName in data) {
-          _listToData(listName,data[listName],options);
+          return _listToData(listName,data[listName],options);
         }
       },
       function(error) {
@@ -109,17 +91,37 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
       }
     );
 
-  } else {
+  return outbound;
+}
 
-    //TODO process array
+// group: 'Languages'|'Countries'
+// subgroup: string
+// sourceType: 'txt'|'json'|array
+export function DummyDataEngine(group,subgroup,sourceType,options) {
 
+  var _data = null;
+
+  // download: a promise that returns data for the _data object.
+  let download = function() {
+    return { then: function() {} };
+  }
+
+  if (sourceType == 'txt') {
+    download = _downloadText;
+  } else if (sourceType == 'json') {
+    download = _downloadJson;
   }
 
   // options.transform: function(t) that produces an array based on t per the part-of-speech pattern.
   return function(listName,options) {
-    //console.log("DummyDataEngine() BEGIN",listName,options);
+
+    if (!_data) {
+      download(group,subgroup,options).then(data => _data = data).done();
+      console.log("engine:",_data);
+    }
 
     var list = _data[listName];
+
     if (list == null) {
       console.log("List '"+listName+"' is unavailable.")
       return "";
@@ -159,6 +161,7 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
         outbound = fn(outbound);
       });
     }
+
     return outbound;
   }
 
