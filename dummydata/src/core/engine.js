@@ -20,7 +20,7 @@ function _processLine(line,options) {
   if (!options) options = {};
 
   let split = [line];
-  if (options.split) { split = split.split(options.split); }
+  if (options.split) { split = line.split(options.split); }
 
   if (options != null && options.transform != null) {
     split = options.transform(split);
@@ -55,13 +55,19 @@ function _downloadText(group,subgroup,options) {
     if (!line) return null;
     let a = line.split("|");
     let listName = a[0];
+
     let fileOptions = a.length > 1 && option(a[1]);
+    if (!fileOptions) fileOptions = {};
+    fileOptions.split = "|";
 
     return download(_dir+listName+'.txt')
     .then(
       function(text) {
-        _listToData(listName,text.split("\n"),fileOptions);
-        return listName+'.txt';
+        //console.log("lineFn",listName,fileOptions);
+        return {
+          name: listName,
+          content: _listToData(listName,text.split("\n"),fileOptions)
+        };
       },
       function(error) {
         console.error(error);
@@ -69,10 +75,11 @@ function _downloadText(group,subgroup,options) {
     );
   };
 
-  var downloadGroupList =
+  let downloadGroupList =
     download(_dir+subgroup+'.txt')
     .then(
       function(text) {
+        // Transform the list of lists into a set of promises to download those lists.
         return text.split("\n").map(lineFn);
       },
       function(error) {
@@ -80,7 +87,20 @@ function _downloadText(group,subgroup,options) {
       }
     );
 
-  return Q.allSettled(downloadGroupList);
+  let outbound =
+    Q.allSettled(downloadGroupList)
+    .then(function(snapshots) {
+      let reduction = {};
+      snapshots.forEach(function(snapshot) {
+        if (!snapshot || !snapshot.value) return;
+        let listName = snapshot.value.name;
+        let listContent = snapshot.value.content;
+        reduction[listName] = listContent;
+      });
+      return reduction;
+    });
+
+  return outbound;
 }
 
 // Download an entire language definition that was minified into a JSON file.

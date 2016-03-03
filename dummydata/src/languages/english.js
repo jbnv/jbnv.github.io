@@ -1,8 +1,8 @@
 import { DummyDataEngine } from "../core/engine"
 import { Selector } from "../core/selector"
+import djoin from "../util/djoin"
 import { singularOrPlural } from "../util/grammar"
 import "../util/extensions"
-import { autobind } from 'core-decorators';
 
 var listOptions = {};
 
@@ -52,11 +52,13 @@ listOptions.verbOption = {
 // Download the data files.
 // This needs to be replaced with a call to the JSON file,
 // but the JSON script needs to process the noun and verb options.
-let data = new DummyDataEngine('Languages','English','txt',listOptions);
-
+var _data = function() {};
+let _enginePromise = new DummyDataEngine('Languages','English','txt',listOptions);
+_enginePromise.then(data => _data = data).done();
 
 function _color() {
-    var baseColor = data('EnglishColors');
+    var baseColor = _data('EnglishColors');
+    if (baseColor == null) return null;
     if (baseColor == "black" || baseColor == "white") { return baseColor; }
     var modifiers = ["light","medium","dark","bright","pale"];
     var selector = Math.random();
@@ -65,54 +67,52 @@ function _color() {
 }
 
 let _maleName = new Selector([
-  [2,() => data('EnglishMaleNames')],
-  [2,() => data('EnglishNamePrefixes1')+data('EnglishNameSuffixes1')],
-  [2,() => data('EnglishNamePrefixes1')+data('EnglishNameSuffixes2')],
-  () => data('EnglishNamePrefixes2')+data('EnglishNameSuffixes1')
+  [2,() => _data('EnglishMaleNames')],
+  // [2,() => _data('EnglishNamePrefixes1')+_data('EnglishNameSuffixes1')],
+  // [2,() => _data('EnglishNamePrefixes1')+_data('EnglishNameSuffixes2')],
+  // () => _data('EnglishNamePrefixes2')+_data('EnglishNameSuffixes1')
 ])
 
 function _femaleName() {
   var selector = Math.random();
-  if (selector < 0.8) return data('EnglishFemaleNames');
-  return _maleName()+data('EnglishFeminineSuffixes');
+  if (selector < 0.8) return _data('EnglishFemaleNames');
+  return _maleName()+_data('EnglishFeminineSuffixes');
 }
 
+function _surnameNamePrefix() { return _data('EnglishSurnameNamePrefixes') || ""; }
+function _nameSuffix1() { return _data('EnglishNameSuffixes1') || ""; }
+
 let _surname = new Selector([
-  [10,function() {return data('EnglishSurnames')}],
+  [10,() => _data('EnglishSurnames')],
   [4,_maleName],
-  [5,function() {return _maleName()+data('EnglishNameSuffixes1')}],
-  [5,function() {return data('EnglishSurnameNamePrefixes')+data('EnglishSurnames')}],
-  [10,function() {return data('EnglishSurnameNamePrefixes')+_maleName()}],
-  [1,function() {return data('EnglishSurnameNamePrefixes')+_maleName()+data('EnglishNameSuffixes1')}],
+  [5,() => djoin(_maleName,_nameSuffix1)],
+  [5,() => djoin(_surnameNamePrefix,() => _data('EnglishSurnames'))],
+  [10,() => djoin(_surnameNamePrefix,_maleName)],
+  [1,() => djoin(_surnameNamePrefix,_maleName,_nameSuffix1)]
 ]);
 
-function _maleFullName() {
-  return _maleName()+" "+_surname();
-};
+function _maleFullName() { return djoin(_maleName,' ',_surname); };
 
-function _femaleFullName() {
-  return _femaleName()+" "+_surname();
-};
-
+function _femaleFullName() { return djoin(_femaleName,' ',_surname); };
 
   // // [adjective phrase, is plural? (default false)]
   // adjectivePhrase = new Selector([
   //   function() { return ["the",singularOrPlural(0.50)]; },
-  //   function() { return ["the "+data("EnglishAdjectives"),singularOrPlural(0.50)]; },
-  //   function() { return [data("EnglishCardinalNumbers"),true]; },
+  //   function() { return ["the "+_data("EnglishAdjectives"),singularOrPlural(0.50)]; },
+  //   function() { return [_data("EnglishCardinalNumbers"),true]; },
   //   function() {
-  //     var number = data("EnglishCardinalNumbers");
+  //     var number = _data("EnglishCardinalNumbers");
   //     return ["the "+number, number != "one"];
   //   },
-  //   function() { return ["the "+data("EnglishOrdinalNumbers")]; },
+  //   function() { return ["the "+_data("EnglishOrdinalNumbers")]; },
   //   function() { return ["some",singularOrPlural(0.50)]; },
-  //   function() { return ["some "+data("EnglishAdjectives"),true]; },
+  //   function() { return ["some "+_data("EnglishAdjectives"),true]; },
   //   function() { return ["any",true]; },
-  //   function() { return ["any "+data("EnglishAdjectives"),true]; },
+  //   function() { return ["any "+_data("EnglishAdjectives"),true]; },
   //   function() { return ["many",true]; },
-  //   function() { return ["many "+data("EnglishAdjectives"),true]; },
+  //   function() { return ["many "+_data("EnglishAdjectives"),true]; },
   //   function() { return ["few",true]; },
-  //   function() { return ["few "+data("EnglishAdjectives"),true]; },
+  //   function() { return ["few "+_data("EnglishAdjectives"),true]; },
   //   function() { return [_maleName()+"'s",singularOrPlural(0.50)]; },
   //   function() { return [_femaleName()+"'s",singularOrPlural(0.50)]; },
   //   function() { return [_surname()+"'s",singularOrPlural(0.50)]; }
@@ -125,23 +125,23 @@ let _cardinalDirectionsForAddresses = new Selector([
 ]);
 
 let _streetName = new Selector([
-  function() { return data('EnglishAnimals'); },
+  function() { return _data('EnglishAnimals'); },
   function() { return _color(); },
-  function() { return data('EnglishOrdinalNumbers'); },
-  function() { return data('EnglishPlants'); },
+  function() { return _data('EnglishOrdinalNumbers'); },
+  function() { return _data('EnglishPlants'); },
   function() { return _maleName(); },
   function() { return _femaleName(); },
   function() { return _surname(); },
   function() { return _maleFullName(); },
   function() { return _femaleFullName(); },
-  function() { return data('EnglishAdjectives')+' '+data('EnglishTerrainWords'); },
-  function() { return data('EnglishTerrainWords')+['side','view'].randomElement(); }
+  function() { return _data('EnglishAdjectives')+' '+_data('EnglishTerrainWords'); },
+  function() { return _data('EnglishTerrainWords')+['side','view'].randomElement(); }
 ]);
 
 function _streetAddress() {
   var number = Math.floor(Math.pow(100000,Math.random()));
   var cardinalDirection = _cardinalDirectionsForAddresses();
-  var streetType = data('EnglishRoadTypes');
+  var streetType = _data('EnglishRoadTypes');
   var address
     = "" + number + " "
     + cardinalDirection + (cardinalDirection == '' ? '' : " ")
@@ -180,10 +180,10 @@ function _city() {
 }
 
   // ipsum_noun_selector = new Selector([
-  //   function() { return data('EnglishAnimals'); }, //TEMP _dataOptions removed from each
-  //   function() { return data('EnglishPlants'); },
-  //   function() { return data('EnglishRoadTypes'); },
-  //   function() { return data('EnglishSubstances'); }
+  //   function() { return _data('EnglishAnimals'); }, //TEMP _dataOptions removed from each
+  //   function() { return _data('EnglishPlants'); },
+  //   function() { return _data('EnglishRoadTypes'); },
+  //   function() { return _data('EnglishSubstances'); }
   // ]);
   //
   // ipsum_clause() {
@@ -196,7 +196,7 @@ function _city() {
   // }
   //
   // verbSelector(tense) {
-  //   return data('EnglishVerbs',{partOfSpeech:'verb','case':tense});
+  //   return _data('EnglishVerbs',{partOfSpeech:'verb','case':tense});
   // }
   //
   // ipsum_verb = new Selector([
