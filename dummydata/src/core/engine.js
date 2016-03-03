@@ -1,6 +1,7 @@
 import Q from 'q'
 import {shuffle} from "../util/random"
 import {GlobalOrdinal} from "./ordinal"
+import "../util/extensions"
 
 import download from "../util/downloader"
 
@@ -10,21 +11,30 @@ function _repository(group,subgroup) {
   return _repositoryURL+group+'/'+subgroup+'/';
 }
 
+// options:
+//   split: Split the line into an array with this delimiter.
+//   transform: Function to apply to each line.
+// Returns array corresponding to the split results of the line.
 function _processLine(line,options) {
   if (line.length == 0) return; // filter out blank lines
-  var split = line.split("|");
+  if (!options) options = {};
+
+  let split = [line];
+  if (options.split) { split = split.split(options.split); }
+
   if (options != null && options.transform != null) {
     split = options.transform(split);
     if (split == null) {
-      console.log(listName,"transform function produces null split!");
+      console.log(listName,"transform function produces null!");
       return;
     }
   }
+
   return split;
 }
 
 function _listToData(listName,list,options) {
-  console.log(listName+": Adding "+list.length+" lines.",options);
+  //console.log(listName+": Adding "+list.length+" lines.",list,options);
   let result = list.map(line => _processLine(line,options));
   shuffle(result);
   return result;
@@ -41,11 +51,11 @@ function _downloadText(group,subgroup,options) {
 
   let _dir = _repository(group,subgroup);
 
-  var lineFn = function(line) {
+  let lineFn = function(line) {
     if (!line) return null;
-    var a = line.split("|");
-    var listName = a[0];
-    var fileOptions = a.length > 1 && option(a[1]);
+    let a = line.split("|");
+    let listName = a[0];
+    let fileOptions = a.length > 1 && option(a[1]);
 
     return download(_dir+listName+'.txt')
     .then(
@@ -79,17 +89,7 @@ function _downloadJson(group,subgroup,options) {
 
   let outbound =
     download(_repository(group,subgroup)+subgroup+'.json')
-    .then(
-      function(json) {
-        var data = JSON.parse(json);
-        for (var listName in data) {
-          return _listToData(listName,data[listName],options);
-        }
-      },
-      function(error) {
-        console.error(error);
-      }
-    );
+    .then(function(json) { return JSON.parse(json); }, function(error) { return console.error(error); });
 
   return outbound;
 }
@@ -113,18 +113,15 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
   }
 
   // options.transform: function(t) that produces an array based on t per the part-of-speech pattern.
-  return function(listName,options) {
+  function _generate(listName,options) {
 
-    if (!_data) {
-      download(group,subgroup,options).then(data => _data = data).done();
-      console.log("engine:",_data);
-    }
+    if (!_data) { return null; }
 
-    var list = _data[listName];
+    let list = _data[listName];
 
     if (list == null) {
-      console.log("List '"+listName+"' is unavailable.")
-      return "";
+      console.log("List '"+listName+"' is unavailable.",_data);
+      return null;
     }
 
     var ordinal = Math.floor(list.length*Math.random());//TEMP; needs to be GlobalOrdinal() % list.length;
@@ -138,9 +135,15 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
       return "";
     }
 
-    if (options == null) return itemArray[0];
+    // If our selected item is a string, use its value.
+    // If our selected item is an array, use its first value.
+    let outbound = itemArray[0];
+    if( typeof itemArray === 'string' ) { outbound = itemArray; }
+    if (options == null) return outbound;
 
-    var outbound = itemArray[0]; // catch-all
+    if (options.capitalize) {
+      outbound = outbound.toInitialCase();
+    }
 
     if (options.partOfSpeech == 'noun') {
       outbound = itemArray[options.plural ? 1 : 0];
@@ -164,5 +167,7 @@ export function DummyDataEngine(group,subgroup,sourceType,options) {
 
     return outbound;
   }
+
+  return download(group,subgroup,options).then(data => _data = data).then(() => _generate);
 
 }

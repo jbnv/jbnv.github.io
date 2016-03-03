@@ -18,7 +18,7 @@ export class Demo {
         evaluatedMenu.push({
           title: e[0],
           value: value,
-          showSpinner: !value
+          showSpinner: value === null
         });
       } else {
         evaluatedMenu.push(null);
