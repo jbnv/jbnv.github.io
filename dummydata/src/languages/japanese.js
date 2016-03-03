@@ -26,6 +26,7 @@ export default {
   femaleName: _femaleName,
   surname: _surname,
   maleFullName: _maleFullName,
+  femaleFullName: _femaleFullName,
 
   menuItems: [
     ["Male Name", _maleName],
