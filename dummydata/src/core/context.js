@@ -2,10 +2,10 @@ import {bindable} from 'aurelia-framework';
 import {DummyData} from './data';
 
 import English from '../languages/english';
-// import German from '../languages/german';
-// import Greek from '../languages/greek';
+import German from '../languages/german';
+import Greek from '../languages/greek';
 import Japanese from '../languages/japanese';
-// import Spanish from '../languages/spanish';
+import Spanish from '../languages/spanish';
 
 import UnitedStates from '../countries/united-states';
 import Canada from '../countries/canada';
@@ -45,10 +45,10 @@ export class Context {
 
     this._data.addLanguage({
       'en': English,
-      // 'de': German,
-      // 'gk': Greek,
+      'de': German,
+      'gk': Greek,
       'jp': Japanese,
-      // 'es': Spanish
+      'es': Spanish
     });
 
     this._data.addCountry({
