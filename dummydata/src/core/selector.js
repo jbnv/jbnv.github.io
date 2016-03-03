@@ -32,10 +32,13 @@ export function Selector(content) {
     return this;
   }
 
-  return function() {
+  return function(selector) {
 
-    // Pick a selector value at random.
-    var selector = Math.floor(Math.random()*_sum);
+    if (selector || selector === 0)
+      { selector = selector % _sum; }
+    else
+      { selector = Math.floor(Math.random()*_sum); }
+    //console.log("Selector()",selector);
 
     var i = 0;
     for(var i = 0, len = _content.length; i < len; i++) {
