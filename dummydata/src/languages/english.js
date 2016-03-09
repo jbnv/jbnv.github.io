@@ -66,11 +66,13 @@ function _color() {
     return baseColor;
 }
 
+function _substance() { return _data('EnglishSubstances') || ""; }
+
 let _maleName = new Selector([
   [2,() => _data('EnglishMaleNames')],
-  // [2,() => _data('EnglishNamePrefixes1')+_data('EnglishNameSuffixes1')],
-  // [2,() => _data('EnglishNamePrefixes1')+_data('EnglishNameSuffixes2')],
-  // () => _data('EnglishNamePrefixes2')+_data('EnglishNameSuffixes1')
+  [2,() => _data('EnglishNamePrefixes1')+_data('EnglishNameSuffixes1')],
+  [2,() => _data('EnglishNamePrefixes1')+_data('EnglishNameSuffixes2')],
+  () => _data('EnglishNamePrefixes2')+_data('EnglishNameSuffixes1')
 ])
 
 function _femaleName() {
@@ -86,9 +88,11 @@ let _surname = new Selector([
   [10,() => _data('EnglishSurnames')],
   [4,_maleName],
   [5,() => djoin(_maleName,_nameSuffix1)],
+  [3,() => djoin(_substance,_nameSuffix1).toInitialCase()],
   [5,() => djoin(_surnameNamePrefix,() => _data('EnglishSurnames'))],
   [10,() => djoin(_surnameNamePrefix,_maleName)],
-  [1,() => djoin(_surnameNamePrefix,_maleName,_nameSuffix1)]
+  [1,() => djoin(_surnameNamePrefix,_maleName,_nameSuffix1)],
+  [1,() => djoin(_surnameNamePrefix,_substance,_nameSuffix1).toInitialCase()]
 ]);
 
 function _maleFullName() { return djoin(_maleName,' ',_surname); };
